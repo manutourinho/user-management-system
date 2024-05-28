@@ -1,11 +1,29 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="UTF-8">
+    <title>&#127799 userssss home! &#127799</title>
 </head>
 <body>
-<h1>Welcome to Index PAGE!</h1>
-
+<div>
+    <table>
+        <tr>
+            <th>
+                <a th:href="@{/user/add}">add user</a>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <a th:href="@{/user/list}">users list</a>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <a th:href="@{/register}">sing up</a>
+            </th>
+        </tr>
+    </table>
+</div>
 
 </body>
 </html>

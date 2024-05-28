@@ -1,11 +1,49 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="UTF-8">
+    <title>&#127799 userssss list! &#127799</title>
 </head>
 <body>
-<h1>User, welcome spring boot security page!</h1>
+<div>
 
+    <a th:href="@{/admin/add}">new here? add a new user first :)</a>
+
+</div>
+<div>
+
+    <table width="100%" border="3">
+        <thead>
+            <tr>
+                <th>&#127799 ID &#127799</th>
+                <th>&#127799 first name &#127799</th>
+                <th>&#127799 last name &#127799</th>
+                <th>&#127799 age &#127799</th>
+                <th>&#127799 username &#127799</th>
+                <th>&#127799 email &#127799</th>
+                <th>&#127799 actions &#127799</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.age}"></td>
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                    <a th:href="@{/users/update/{id} (id=${user.id})}">update</a>
+                    <form th:action="@{/users/delete/{id} (id=${user.id})}" method="post" class="inline">
+                        <button type="submit" class="btn btn-danger">delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
 
 </body>
 </html>
