@@ -1,19 +1,24 @@
 package habsida.spring.boot_security.demo.service;
 
+import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
-import habsida.spring.boot_security.demo.model.UserDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
-    UserDTO loginUser(String username, String password);
+    User loginUser(String username, String password);
     void saveOrUpdateUser(User user);
 
     void removeUserById(long id);
 
-    User getUserById(long id);
+    Optional<User> findById(long id);
 
     List<User> getAllUsers();
+
+    List<Role> getRoles();
+
+    String createAcc(Long idRole, Long idUser);
 
 }

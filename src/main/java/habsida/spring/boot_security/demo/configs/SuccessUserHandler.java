@@ -1,12 +1,7 @@
 package habsida.spring.boot_security.demo.configs;
 
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -14,14 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 @Component
 public class SuccessUserHandler implements AuthenticationSuccessHandler {
-
-    protected final Log LOGGER = LogFactory.getLog(getClass());
 
     // Spring Security использует объект Authentication, пользователя авторизованной сессии.
     @Override
@@ -33,24 +23,17 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
 //            httpServletResponse.sendRedirect("/admin");
 //        }
 //
-//        httpServletResponse.sendRedirect("/home");
-        String homePage = "";
-        Map<String, String> homePageByRole = new HashMap<>();
-        homePageByRole.put("ROLE_USER", "/user");
-        homePageByRole.put("ROLE_ADMIN", "/admin");
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+//        httpServletResponse.sendRedirect("/");
+        String redirectUrl = httpServletRequest.getContextPath();
+        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            redirectUrl = "/admin";
 
-        for (GrantedAuthority authority : authorities) {
-            String authorityName = authority.getAuthority();
+        } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))) {
+            redirectUrl = "/user";
 
-            if (homePageByRole.containsKey(authorityName)) {
-                homePage = homePageByRole.get(authorityName);
-                break;
-            }
         }
 
-        RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-        redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, homePage);
+        httpServletResponse.sendRedirect(redirectUrl);
 
     }
 }

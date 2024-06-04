@@ -1,44 +1,40 @@
 package habsida.spring.boot_security.demo.service;
 
+import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
-import habsida.spring.boot_security.demo.model.UserAccount;
-import habsida.spring.boot_security.demo.model.UserDTO;
-import habsida.spring.boot_security.demo.repository.UserAccountRepository;
+import habsida.spring.boot_security.demo.repository.RoleRepository;
 import habsida.spring.boot_security.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserAccountRepository userAccountRepository;
-
-    public UserServiceImpl(UserRepository userRepository, UserAccountRepository userAccountRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.userAccountRepository = userAccountRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+
     }
 
     @Override
-    public UserDTO loginUser(String username, String password) {
-        User user = userRepository.findByEmail(username).getUser();
-
-        if (user == null) {
-            UserAccount userAccount = userAccountRepository.findByUsername(username);
-            return new UserDTO(user, userAccount);
-
-        } else {
-            return null;
-        }
+    public User loginUser(String username, String password) {
+        return userRepository.findByUsername(username);
 
     }
 
@@ -55,22 +51,70 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(long id) {
-        User user = null;
-        if (Objects.nonNull(id)) {
-            Optional<User> userOptional = userRepository.findById(id);
-            if (userOptional.isPresent()) {
-                user = userOptional.get();
-            } else {
-                throw new RuntimeException("user not found with the id " + id + " :(");
-            }
-        }
-        return user;
+    public Optional<User> findById(long id) {
+        return userRepository.findById(id);
 
     }
 
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<Role> getRoles() {
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public String createAcc(Long idRole, Long idUser) {
+        Optional<User> userOptional = userRepository.findById(idUser);
+        Optional<Role> roleOptional = roleRepository.findById(idRole);
+
+        if (userOptional.isEmpty()) {
+            throw new EntityNotFoundException("Username not found :(");
+
+        }
+
+        User user = userOptional.get();
+        roleOptional.ifPresent(user::setRole);
+
+        String generatedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(generatedPassword);
+        user.setUsername(generateUsername(user.getEmail()));
+
+
+
+        userRepository.save(user);
+
+        return generatedPassword;
+    }
+
+    private String generateUsername(String email) {
+        int m = 0;
+        String username = "";
+        do {
+            username = email + (m > 0 ? m : "");
+            m++;
+
+        } while (userRepository.findByUsername(username) != null);
+
+        return username;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("Username " + username + " not found :(");
+
+        }
+
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                user.getAuthorities());
     }
 }

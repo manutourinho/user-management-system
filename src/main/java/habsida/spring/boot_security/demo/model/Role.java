@@ -3,7 +3,9 @@ package habsida.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -14,11 +16,16 @@ public class Role implements GrantedAuthority {
 
     private String roleName;
 
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users = new HashSet<>();
+
     public Role() {
     }
 
-    public Role(String roleName) {
+    public Role(Long idRole, String roleName, Set<User> users) {
+        this.idRole = idRole;
         this.roleName = roleName;
+        this.users = users;
     }
 
     @Override
