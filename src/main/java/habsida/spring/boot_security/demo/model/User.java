@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -28,13 +29,13 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @Column
     private String username;
@@ -42,14 +43,14 @@ public class User implements UserDetails {
     @Column(length = 60)
     private String password;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idRole")
-    private Role role;
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "idRole")
+//    private Role role;
 
     public User() {
     }
 
-    public User(Long idUser, String firstName, String lastName, Byte age, String email, Set<Role> roles, String username, String password, Role role) {
+    public User(Long idUser, String firstName, String lastName, Byte age, String email, Set<Role> roles, String username, String password) {
         this.idUser = idUser;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -58,7 +59,6 @@ public class User implements UserDetails {
         this.roles = roles;
         this.username = username;
         this.password = password;
-        this.role = role;
     }
 
     public User(String username, String password) {
@@ -78,7 +78,6 @@ public class User implements UserDetails {
                 ", roles=" + roles +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", role=" + role +
                 '}';
     }
 
@@ -97,17 +96,18 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        ArrayList<GrantedAuthority> arrAuths = new ArrayList<>();
+//        ArrayList<GrantedAuthority> arrAuths = new ArrayList<>();
+//
+//        if (getRole() != null) {
+//            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(getRole().getRoleName());
+//            arrAuths.add(authority);
+//        }
+//
+//        return arrAuths;
 
-        if (getRole() != null) {
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(getRole().getRoleName());
-            arrAuths.add(authority);
-        }
-
-        return arrAuths;
-//        List<GrantedAuthority> authorities = user.getRoles().stream()
-//                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-//                .collect(Collectors.toList());
+        return getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -122,22 +122,22 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
     
     //    ✿✿✿ getters & setters ✿✿✿
@@ -197,12 +197,5 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }
 

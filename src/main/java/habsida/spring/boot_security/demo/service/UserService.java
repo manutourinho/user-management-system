@@ -19,6 +19,6 @@ public interface UserService {
 
     List<Role> getRoles();
 
-    String createAcc(Long idRole, Long idUser);
+//    String createAcc(Long idRole, Long idUser);
 
 }

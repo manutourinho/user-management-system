@@ -13,7 +13,7 @@
   <div class="container">
     <h2>add user</h2>
 
-    <form th:action="@{/users/add}" th:object="${user}" method="post">
+    <form th:action="@{/admin/add}" th:object="${user}" method="post">
       <label for="first_name">first name:</label>
       <input type="text" id="first_name" name="first_name" th:field="*{firstName}" required>
       <label for="last_name">last name:</label>
@@ -24,12 +24,24 @@
       <input type="text" id="email" name="email" th:field="*{email}" required>
       <label for="username">username:</label>
       <input type="text" id="username" name="username" th:field="*{username}" required>
+      <label for="password">password:</label>
+      <input type="text" id="password" name="password" th:field="*{password}" required>
+
+      <div>
+        <label for="roleIds">roles:</label>
+        <select th:field="*{roles}" id="roleIds" multiple>
+          <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.roleName}"></option>
+        </select>
+      </div>
+
       <button type="submit">&#127799 SAVE &#127799</button>
     </form>
-    <br>
-    <br>
 
-    <a th:href="@{/users}">go to users list!</a>
+  </div>
+
+  <div>
+
+      <a th:href="@{/admin}">home</a>
 
   </div>
 

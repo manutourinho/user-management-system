@@ -7,11 +7,6 @@
 <body>
 <div>
 
-    <a th:href="@{/admin/add}">new here? add a new user first :)</a>
-
-</div>
-<div>
-
     <table width="100%" border="3">
         <thead>
             <tr>
@@ -21,8 +16,6 @@
                 <th>&#127799 age &#127799</th>
                 <th>&#127799 username &#127799</th>
                 <th>&#127799 email &#127799</th>
-                <th>&#127799 actions &#127799</th>
-
             </tr>
         </thead>
         <tbody>
@@ -33,15 +26,18 @@
                 <td th:text="${user.age}"></td>
                 <td th:text="${user.username}"></td>
                 <td th:text="${user.email}"></td>
-                <td>
-                    <a th:href="@{/users/update/{id} (id=${user.id})}">update</a>
-                    <form th:action="@{/users/delete/{id} (id=${user.id})}" method="post" class="inline">
-                        <button type="submit" class="btn btn-danger">delete</button>
-                    </form>
-                </td>
             </tr>
         </tbody>
     </table>
+
+</div>
+
+<br>
+<br>
+
+<div>
+
+    <a th:href="@{/logout}">logout</a>
 
 </div>
 

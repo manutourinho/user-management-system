@@ -2,29 +2,33 @@ package habsida.spring.boot_security.demo.controller;
 
 import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
+import habsida.spring.boot_security.demo.repository.RoleRepository;
 import habsida.spring.boot_security.demo.repository.UserRepository;
 import habsida.spring.boot_security.demo.service.UserService;
-import habsida.spring.boot_security.demo.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
 public class WebAppController {
 
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public WebAppController(UserService userService) {
+    public WebAppController(UserService userService,
+                            RoleRepository roleRepository, UserRepository userRepository) {
         this.userService = userService;
 
+        this.roleRepository = roleRepository;
     }
 
 //    @GetMapping("/register")
@@ -63,9 +67,9 @@ public class WebAppController {
 
     }
 
-    @GetMapping("/admin")
-    public String adminHomePage() {
-        return "index";
+    @GetMapping("/logout")
+    public String logoutPage() {
+        return "logout";
     }
 
     @GetMapping("/user")
@@ -76,7 +80,13 @@ public class WebAppController {
         } catch (Exception e) {
             model.addAttribute("users", null);
         }
-        return "user";
+        return "list";
+
+    }
+
+    @GetMapping("/admin")
+    public String adminHomePage() {
+        return "admin";
     }
 
     @GetMapping("/admin/add")
@@ -87,7 +97,14 @@ public class WebAppController {
     }
 
     @PostMapping("/admin/add")
-    public String addUser(@ModelAttribute("user") User user) {
+    public String addUser(@ModelAttribute("user") User user, @RequestParam("roleId") List<Long> roleId) {
+
+        Set<Role> roles = roleId.stream()
+                        .map(roleRepository::findById)
+                                .filter(Optional::isPresent)
+                                        .map(Optional::get)
+                                                .collect(Collectors.toSet());
+        user.setRoles(roles);
         userService.saveOrUpdateUser(user);
         return "redirect:/admin";
 
@@ -111,6 +128,19 @@ public class WebAppController {
     public String delete(@PathVariable("id") long id) {
         userService.removeUserById(id);
         return "redirect:/admin";
+
+    }
+
+    @GetMapping("/admin/list")
+    public String adminListView(Model model) {
+        try {
+            List<User> users = userService.getAllUsers();
+            model.addAttribute("users", users);
+        } catch (Exception e) {
+            model.addAttribute("users", null);
+        }
+
+        return "admin_list_view";
 
     }
 

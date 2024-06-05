@@ -17,8 +17,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    public UserDetailsService userDetailsService;
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Bean
@@ -53,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails admin =
                 User.withUsername("admin")
                         .password(passwordEncoder().encode("admin"))
-                        .roles("ADMIN")
+                        .roles("ADMIN", "USER")
                         .build();
 
         return new InMemoryUserDetailsManager(user, admin);
@@ -62,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
+        auth.userDetailsService(userDetailsService())
                 .passwordEncoder(passwordEncoder);
 
     }
