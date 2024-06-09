@@ -3,18 +3,16 @@ package habsida.spring.boot_security.demo.controller;
 import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
 import habsida.spring.boot_security.demo.repository.RoleRepository;
-import habsida.spring.boot_security.demo.repository.UserRepository;
 import habsida.spring.boot_security.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -24,11 +22,10 @@ public class WebAppController {
     private final RoleRepository roleRepository;
 
     @Autowired
-    public WebAppController(UserService userService,
-                            RoleRepository roleRepository, UserRepository userRepository) {
+    public WebAppController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
-
         this.roleRepository = roleRepository;
+
     }
 
 //    @GetMapping("/register")
@@ -52,6 +49,7 @@ public class WebAppController {
     @GetMapping("/login")
     public String loginPage() {
         return "login";
+
     }
 
     @PostMapping("/login")
@@ -60,9 +58,11 @@ public class WebAppController {
         if (user == null) {
             session.setAttribute("currentUser", user);
             return "redirect:/";
+
         } else {
             model.addAttribute("error", "Invalid username or password");
             return "login";
+
         }
 
     }
@@ -70,6 +70,7 @@ public class WebAppController {
     @GetMapping("/logout")
     public String logoutPage() {
         return "logout";
+
     }
 
     @GetMapping("/user")
@@ -92,39 +93,46 @@ public class WebAppController {
     @GetMapping("/admin/add")
     public String showAddUserForm(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("roles", roleRepository.findAll());
         return "form";
 
     }
 
     @PostMapping("/admin/add")
-    public String addUser(@ModelAttribute("user") User user, @RequestParam("roleId") List<Long> roleId) {
+    public String addUser(@ModelAttribute("user") User user) {
 
-        Set<Role> roles = roleId.stream()
-                        .map(roleRepository::findById)
-                                .filter(Optional::isPresent)
-                                        .map(Optional::get)
-                                                .collect(Collectors.toSet());
-        user.setRoles(roles);
+//        Set<Role> roles = roleId.stream()
+//                        .map(roleRepository::findById)
+//                                .filter(Optional::isPresent)
+//                                        .map(Optional::get)
+//                                                .collect(Collectors.toSet());
+
+        Set<Role> roles = user.getRoles();
+        roleRepository.saveAll(roles);
+//        user.setRoles(roles);
         userService.saveOrUpdateUser(user);
-        return "redirect:/admin";
+        return "redirect:/admin/list";
 
     }
 
     @GetMapping(value = "admin/update/{id}")
     public String showUserUpdateForm(@PathVariable Long id, Model model) {
         model.addAttribute("user", userService.findById(id));
-        return "form";
+        return "update";
 
     }
 
     @PostMapping("admin/update/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute("user") User user) {
+    public String update(@PathVariable("id") Long id, @ModelAttribute("user") User user, BindingResult result) {
+        if (result.hasErrors()) {
+            return "update";
+        }
         userService.saveOrUpdateUser(user);
         return "redirect:/admin";
 
     }
 
-    @GetMapping(value = "admin/delete/{id}")
+    @PostMapping(value = "admin/delete/{id}")
     public String delete(@PathVariable("id") long id) {
         userService.removeUserById(id);
         return "redirect:/admin";

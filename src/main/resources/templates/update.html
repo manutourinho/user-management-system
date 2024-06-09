@@ -9,19 +9,31 @@
 
     <h2>update user</h2>
 
-    <form th:action="@{/user/update/{id}(id=${user.id})}" th:object="${user}" method="post">
+    <form th:action="@{admin/update/{id}}" th:object="${user}" th:method="post">
         <label for="first_name">first name:</label>
-        <input type="text" id="first_name" name="first_name" th:field="*{firstName}" required>
+        <input type="text" id="first_name" name="first_name" th:field="*{firstName}" path="firstName" required>
         <label for="last_name">last name:</label>
-        <input type="text" id="last_name" name="last_name" th:field="*{lastName}" required>
+        <input type="text" id="last_name" name="last_name" th:field="*{lastName}" path="lastName" required>
         <label for="age">age:</label>
-        <input type="number" id="age" name="age" th:field="*{age}" required>
+        <input type="number" id="age" name="age" th:field="*{age}" path="age" required>
         <label for="email">email:</label>
-        <input type="text" id="email" name="email" th:field="*{email}" required>
+        <input type="text" id="email" name="email" th:field="*{email}" path="email" required>
+        <label for="username">username:</label>
+        <input type="text" id="username" name="username" th:field="*{username}" path="username" required>
+        <label for="password">password:</label>
+        <input type="text" id="password" name="password" th:field="*{password}" path="password" required>
+
+        <div>
+            <label for="roles">roles:</label>
+            <select th:field="*{roles}" id="roles" multiple path="roles">
+                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.roleName}"></option>
+            </select>
+        </div>
+
         <button type="submit">&#127799 UPDATE &#127799</button>
     </form>
 
-    <a th:href="@{/user}">go to users list!</a>
+    <a th:href="@{/admin}">home</a>
 
 </div>
 

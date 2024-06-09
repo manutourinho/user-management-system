@@ -22,15 +22,21 @@
         </thead>
         <tbody>
         <tr th:each="user : ${users}">
-            <td th:text="${user.id}"></td>
+            <td th:text="${user.idUser}"></td>
             <td th:text="${user.firstName}"></td>
             <td th:text="${user.lastName}"></td>
             <td th:text="${user.age}"></td>
             <td th:text="${user.username}"></td>
             <td th:text="${user.email}"></td>
             <td>
-                <a th:href="@{/admin/update/{id} (id=${user.id})}">update</a>
-                <form th:action="@{/admin/delete/{id} (id=${user.id})}" method="post" class="inline">
+<!--                <a th:href="@{/admin/update/{id} (id=${user.idUser})}">update</a>-->
+                <form th:action="@{/admin/update/{id} (id=${user.idUser})}" method="post">
+                    <input type="hidden" name="_method" value="PUT" />
+                    <button type="submit">update</button>
+                </form>
+
+                <form th:action="@{/admin/delete/{id} (id=${user.idUser})}" method="post" class="inline">
+                    <input type="hidden" name="_method" value="DELETE" />
                     <button type="submit" class="btn btn-danger">delete</button>
                 </form>
             </td>

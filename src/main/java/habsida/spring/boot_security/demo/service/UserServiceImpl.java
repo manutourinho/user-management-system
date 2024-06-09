@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,11 +58,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+
     }
 
     @Override
     public List<Role> getRoles() {
         return roleRepository.findAll();
+
     }
 
 //    @Override
@@ -100,6 +101,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } while (userRepository.findByUsername(username) != null);
 
         return username;
+
     }
 
     @Override
@@ -111,10 +113,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         }
 
-
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
                 user.getAuthorities());
+
     }
 }
