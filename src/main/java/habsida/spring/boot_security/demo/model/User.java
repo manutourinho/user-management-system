@@ -26,7 +26,7 @@ public class User implements UserDetails {
     @Column
     private Byte age;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)

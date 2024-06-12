@@ -14,6 +14,7 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRole;
 
+    @Column(columnDefinition = "varchar(255) default 'USER")
     private String roleName;
 
     @ManyToMany(mappedBy = "roles")
@@ -68,5 +69,7 @@ public class Role implements GrantedAuthority {
         return roleName;
     }
 
-
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 }

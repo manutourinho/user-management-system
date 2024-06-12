@@ -1,5 +1,9 @@
 package habsida.spring.boot_security.demo.configs;
 
+import habsida.spring.boot_security.demo.model.Role;
+import habsida.spring.boot_security.demo.model.User;
+import habsida.spring.boot_security.demo.repository.RoleRepository;
+import habsida.spring.boot_security.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,11 +12,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
@@ -20,9 +24,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Bean
     public SuccessUserHandler getSuccessUserHandler() {
         return new SuccessUserHandler();
+    }
+
+    @PostConstruct
+    public void init() {
+        createDbUsers("user", "user", "USER");
+        createDbUsers("admin", "admin", "ADMIN");
+
     }
 
     @Override
@@ -37,25 +53,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(getSuccessUserHandler())
                 .and().logout()
                 .deleteCookies();
+
     }
 
 //     аутентификация inMemory
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withUsername("user")
-                        .password(passwordEncoder().encode("user"))
-                        .roles("USER")
-                        .build();
+    private void createDbUsers(String username, String password, String... roles) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordEncoder().encode(password));
 
-        UserDetails admin =
-                User.withUsername("admin")
-                        .password(passwordEncoder().encode("admin"))
-                        .roles("ADMIN", "USER")
-                        .build();
+        Set<Role> roleSet = new HashSet<>();
+        for (String role : roles) {
+            Role r = new Role();
+            r.setRoleName(role);
 
-        return new InMemoryUserDetailsManager(user, admin);
+            roleRepository.save(r);
+            roleSet.add(r);
+        }
+
+        user.setRoles(roleSet);
+
+        userRepository.save(user);
+
     }
 
 
