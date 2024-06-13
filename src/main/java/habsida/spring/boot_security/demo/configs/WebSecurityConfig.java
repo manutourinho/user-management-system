@@ -64,8 +64,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         Set<Role> roleSet = new HashSet<>();
         for (String role : roles) {
-            Role r = new Role();
-            r.setRoleName(role);
+            Role r = roleRepository.findByName(role);
+            if (r == null) {
+                r = new Role();
+                r.setRoleName(role);
+            }
+
+            System.out.println("Creating role: " + r.getRoleName());
 
             roleRepository.save(r);
             roleSet.add(r);
