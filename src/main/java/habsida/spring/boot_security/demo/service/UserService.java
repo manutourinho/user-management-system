@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserService {
 
-    User loginUser(String username, String password);
+    User loginUser(String email, String password);
     void saveOrUpdateUser(User user);
 
     void removeUserById(long id);

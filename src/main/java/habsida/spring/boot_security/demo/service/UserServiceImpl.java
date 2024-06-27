@@ -21,19 +21,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
 
     }
 
     @Override
-    public User loginUser(String username, String password) {
-        return userRepository.findByUsername(username);
+    public User loginUser(String email, String password) {
+        return userRepository.findByUsername(email);
 
     }
 
@@ -98,23 +96,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             username = email + (m > 0 ? m : "");
             m++;
 
-        } while (userRepository.findByUsername(username) != null);
+        } while (userRepository.findByUsername(email) != null);
 
         return username;
 
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(email);
 
         if (user == null) {
-            throw new UsernameNotFoundException("Username " + username + " not found :(");
+            throw new UsernameNotFoundException("Email " + email + " not found :(");
 
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
+                user.getEmail(),
                 user.getPassword(),
                 user.getAuthorities());
 

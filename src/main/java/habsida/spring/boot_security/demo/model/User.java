@@ -26,9 +26,6 @@ public class User implements UserDetails {
     @Column
     private Byte age;
 
-    @Column(unique = true)
-    private String email;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -37,8 +34,8 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @Column
-    private String username;
+    @Column(unique = true)
+    private String email;
 
     @Column(length = 60)
     private String password;
@@ -50,19 +47,18 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long idUser, String firstName, String lastName, Byte age, String email, Set<Role> roles, String username, String password) {
+    public User(Long idUser, String firstName, String lastName, Byte age, Set<Role> roles, String email, String password) {
         this.idUser = idUser;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
-        this.email = email;
         this.roles = roles;
-        this.username = username;
+        this.email = email;
         this.password = password;
     }
 
-    public User(String username, String password) {
-        this.username = username;
+    public User(String email, String password) {
+        this.email = email;
         this.password = password;
 
     }
@@ -74,9 +70,8 @@ public class User implements UserDetails {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
-                ", email='" + email + '\'' +
                 ", roles=" + roles +
-                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
@@ -117,7 +112,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -187,10 +182,6 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public void setPassword(String password) {

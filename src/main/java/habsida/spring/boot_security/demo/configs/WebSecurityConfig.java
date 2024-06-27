@@ -27,7 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/", "/register").permitAll()
-                .and().formLogin().loginPage("/login").permitAll()
+                .and().formLogin()
+                .usernameParameter("email").permitAll()
                 .successHandler(getSuccessUserHandler)
                 .and().logout()
                 .deleteCookies();
