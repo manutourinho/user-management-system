@@ -115,14 +115,14 @@
                                             </a>
                                         </td>
                                         <td class="text-center">
-                                            <!--                <a th:href="@{/admin/update/{id} (id=${user.idUser})}">update</a>-->
+<!--                                            <a th:href="@{/admin/update/{id} (id=${user.idUser})}">update</a>-->
+<!--                                            <button type="button" class="btn btn-primary edit-user-btn" data-toggle="modal" data-bs-target="#editUserModal">edit</button>-->
                                             <form th:action="@{/admin/update/{id} (id=${user.idUser})}" method="post">
-                                                <input type="hidden" name="_method" value="PUT" />
-                                                <button type="button" class="btn btn-primary edit-user-btn" data-user-id="${user.idUser}" data-toggle="modal" data-target="#editUserModal">edit</button>
-                                                <!-- link to the edit/update user modal -->
-                                                <div th:replace="admin-user-edit-modal :: modal"></div>
+<!--                                                <input type="hidden" name="_method" value="PUT" />-->
+                                                <button type="button" class="btn btn-primary edit-user-btn" data-user-id="${user.idUser}" data-bs-toggle="modal" data-bs-target="#editUserModal">edit</button>
                                             </form>
                                         </td>
+
                                         <td class="text-center">
                                             <form th:action="@{/admin/delete/{id} (id=${user.idUser})}" method="post" class="inline">
                                                 <input type="hidden" name="_method" value="DELETE" />
@@ -181,6 +181,53 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- edit modal! -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/admin/update/{id} (id=${user.idUser})}" method="post">
+                    <input type="hidden" name="_method" value="PUT" />
+
+                    <div class="modal-body">
+                        <!-- form to edit user details -->
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" th:value="${user.firstName}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" th:value="${user.lastName}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" class="form-control" id="age" name="age" th:value="${user.age}">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" th:value="${user.email}">
+                        </div>
+
+                        <!-- roles selection -->
+                        <div>
+                            <select class="form-select" multiple aria-label="multiple select example" name="selectedRoles" data-bs-select="true">
+                                <option th:each="role : ${roles}" th:value="${role.idRole}" th:text="${role.roleName.substring(5)}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">cancel</button>
+                    <button type="submit" class="btn btn-primary">save changes!</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </body>

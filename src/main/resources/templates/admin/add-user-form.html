@@ -46,11 +46,11 @@
         <!-- Sidebar navigation -->
         <ul class="nav flex-column">
           <li th:each="role : ${roles}" class="nav-item flex-grow-1">
-            <!-- admin role navigation -->
-            <a th:if="${role.getRoleName() == 'ROLE_ADMIN'}" class="nav-link active w-100 bg-dark" aria-current="page" th:href="@{/admin}">Admin</a>
-            <!-- user role navigation -->
-            <a th:if="${role.getRoleName() == 'ROLE_USER'}" class="nav-link w-100 text-secondary" th:href="@{/user}">User</a>
-          </li>
+          <!-- admin role navigation -->
+          <a th:if="${role.getRoleName() == 'ROLE_ADMIN'}" class="nav-link active w-100 bg-dark" aria-current="page" th:href="@{/admin}">Admin</a>
+          <!-- user role navigation -->
+          <a th:if="${role.getRoleName() == 'ROLE_USER'}" class="nav-link w-100 text-secondary" th:href="@{/user}">User</a>
+        </li>
         </ul>
       </nav>
     </div>
