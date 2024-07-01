@@ -11,20 +11,18 @@
 
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
-  <!-- Logged user info -->
+<!-- navbar -->
+<nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark text-white">
+  <!-- logged user info -->
   <div class="container-fluid">
     <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
       <li class="nav-item">
         <p class="fs-6 d-inline" th:text="${loggedUser.username}">Email</p>
       </li>
-      &nbsp;&nbsp;
-      <li class="nav-item">
+      <li class="nav-item ms-2">
         <p class="fs-6 d-inline">with roles</p>
       </li>
-      &nbsp;&nbsp;
-      <li class="nav-item">
+      <li class="nav-item ms-2">
         <a th:each="role : ${loggedUser.roles}">
           <span th:text="${' [' + role.roleName.substring(5) + ']'}"></span>
         </a>
@@ -32,7 +30,7 @@
     </ul>
     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
       <li class="nav-item">
-        <a class="nav-link text-secondary">logout</a>
+        <a class="nav-link text-secondary" th:href="@{/logout}">logout</a>
       </li>
     </ul>
   </div>
@@ -67,43 +65,54 @@
             <a class="nav-link fw-lighter" th:href="@{/admin}">All Users</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active fw-bold" th:href="@{#add-user}" th:attr="data-bs-target=#{add-user}">New Users</a>
+            <a class="nav-link active fw-bold" th:href="@{#add-user}" th:attr="data-bs-target=#{add-user}">New User</a>
           </li>
         </ul>
 
         <!-- New user tab content -->
         <div class="tab-content">
           <div class="tab-pane fade show active" id="add-user">
-            <div class="container">
-              <h2>Add User</h2>
 
-              <form method="post">
-                <div class="col-md-6">
-                  <label for="first_name" class="form-label">First Name</label>
-                  <input type="text" class="form-control" id="first_name" name="first_name" required>
+            <div class="border bg-dark text-white">
+              <h5 class="px-3 mt-2">Add User</h5>
+            </div>
+
+            <div class="container border p-3">
+
+              <form th:action="@{/user/add}" th:object="${user}" method="post">
+                <div class="row">
+                  <div class="col">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" th:field="*{firstName}" required>
+                  </div>
+                  <div class="col">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" th:field="*{lastName}" required>
+                  </div>
+                  <div class="col-md-2">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" th:field="*{age}">
+                  </div>
                 </div>
-                <div class="col-md-6">
-                  <label for="last_name" class="form-label">Last Name</label>
-                  <input type="text" class="form-control" id="last_name" name="last_name" required>
+                <div class="row mt-3">
+                  <div class="col">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email" placeholder="manu@mail.com" name="email" th:field="*{email}" required>
+                  </div>
+                  <div class="col">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" th:field="*{password}" required>
+                  </div>
                 </div>
-                <div class="col-md-2">
-                  <label for="age" class="form-label">Age</label>
-                  <input type="number" class="form-control" id="age" name="age" required>
-                </div>
-                <div class="col-12">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="text" class="form-control" id="email" placeholder="manu@mail.com" name="email">
-                </div>
-                <div class="col-md-6">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div>
-                  <select class="form-select" multiple aria-label="multiple select example" name="selectedRoles" data-bs-select="true">
+                <div class="row mt-3 mb-3">
+                  <label for="roles" class="form-label">Role</label>
+                  <select id="roles" class="form-select" multiple aria-label="multiple select example" name="selectedRoles" data-bs-select="true">
                     <option th:each="role : ${roles}" th:value="${role.idRole}" th:text="${role.roleName.substring(5)}"></option>
                   </select>
                 </div>
-                <button class="btn btn-dark" type="submit">&#127799 save new user! &#127799</button>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                  <button class="btn btn-dark" type="submit">&#127799 save new user! &#127799</button>
+                </div>
               </form>
             </div>
           </div>
