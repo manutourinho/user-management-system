@@ -37,7 +37,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void saveOrUpdateUser(User user) {
-        userRepository.save(user);
+        if (user.getIdUser() != null) {
+            User existingUser = userRepository.findById(user.getIdUser()).orElse(null);
+            if (existingUser != null) {
+                existingUser.setFirstName(user.getFirstName());
+                existingUser.setLastName(user.getLastName());
+                existingUser.setRoles(user.getRoles());
+                existingUser.setEmail(user.getEmail());
+                existingUser.setPassword(user.getPassword());
+                userRepository.save(existingUser);
+
+            }
+        } else {
+            userRepository.save(user);
+
+        }
 
     }
 

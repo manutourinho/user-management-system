@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -118,22 +117,21 @@ public class WebAppController {
 
     }
 
-    @GetMapping("/admin/add")
-    public String showAddUserForm(Model model, Principal principal) {
-        User loggedUser = userRepository.findByUsername(principal.getName());
-        model.addAttribute("loggedUser", loggedUser);
-        model.addAttribute("user", new User());
-        model.addAttribute("roles", roleRepository.findAll());
+//    @GetMapping("/admin/add")
+//    public String showAddUserForm(Model model, Principal principal) {
+//        User loggedUser = userRepository.findByUsername(principal.getName());
+//        model.addAttribute("loggedUser", loggedUser);
+//        model.addAttribute("user", new User());
+//        model.addAttribute("roles", roleRepository.findAll());
+//
+//        return "admin/admin-home";
+//
+//    }
 
-        return "admin/add-user-form";
-
-    }
-
-    @PostMapping("/admin/add")
+    @PostMapping("/admin")
     public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, @RequestParam("selectedRoles") Set<Role> selectedRoles) {
         if (bindingResult.hasErrors()) {
             logger.error("Error creating new user {}", user);
-            return "admin/add-user-form";
         }
 
 
@@ -151,10 +149,16 @@ public class WebAppController {
 //        return "admin/admin-home";
 //    }
 
-    @GetMapping("admin/update/{id}")
+    @PostMapping(value = "/admin/update/{id}")
     @ResponseBody
-    public String update(@PathVariable("id") Long id, @ModelAttribute("user") User user) {
-        userService.saveOrUpdateUser(user);
+    public String update(@PathVariable("id") Long id, @ModelAttribute("user") User user, Model model) {
+        try {
+            userService.saveOrUpdateUser(user);
+        } catch (Exception e) {
+            model.addAttribute("error", "an error occurred!" + e.getMessage());
+            return "admin/admin-home";
+        }
+
         logger.info("user has been updated {}", user);
         return "redirect:/admin";
 
