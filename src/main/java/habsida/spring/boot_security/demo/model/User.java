@@ -34,7 +34,7 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(length = 60)

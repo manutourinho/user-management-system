@@ -117,18 +117,18 @@ public class WebAppController {
 
     }
 
-//    @GetMapping("/admin/add")
-//    public String showAddUserForm(Model model, Principal principal) {
-//        User loggedUser = userRepository.findByUsername(principal.getName());
-//        model.addAttribute("loggedUser", loggedUser);
-//        model.addAttribute("user", new User());
-//        model.addAttribute("roles", roleRepository.findAll());
-//
-//        return "admin/admin-home";
-//
-//    }
+    @GetMapping("/admin/add")
+    public String showAddUserForm(Model model, Principal principal) {
+        User loggedUser = userRepository.findByUsername(principal.getName());
+        model.addAttribute("loggedUser", loggedUser);
+        model.addAttribute("user", new User());
+        model.addAttribute("roles", roleRepository.findAll());
 
-    @PostMapping("/admin")
+        return "admin/admin-home";
+
+    }
+
+    @PostMapping("/admin/add")
     public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, @RequestParam("selectedRoles") Set<Role> selectedRoles) {
         if (bindingResult.hasErrors()) {
             logger.error("Error creating new user {}", user);

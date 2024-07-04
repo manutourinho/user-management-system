@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,15 +37,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void saveOrUpdateUser(User user) {
         if (user.getIdUser() != null) {
             User existingUser = userRepository.findById(user.getIdUser()).orElse(null);
+
             if (existingUser != null) {
                 existingUser.setFirstName(user.getFirstName());
                 existingUser.setLastName(user.getLastName());
                 existingUser.setRoles(user.getRoles());
                 existingUser.setEmail(user.getEmail());
-                existingUser.setPassword(user.getPassword());
                 userRepository.save(existingUser);
 
             }
+
         } else {
             userRepository.save(user);
 
@@ -58,12 +57,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void removeUserById(long id) {
         userRepository.deleteById(id);
-
-    }
-
-    @Override
-    public Optional<User> findById(long id) {
-        return userRepository.findById(id);
 
     }
 
