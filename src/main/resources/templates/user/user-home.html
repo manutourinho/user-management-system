@@ -49,7 +49,8 @@
                         <!-- admin role navigation -->
                         <a th:if="${role.getRoleName() == 'ROLE_ADMIN'}" class="nav-link w-100 text-secondary" th:href="@{/admin}">Admin</a>
                         <!-- user role navigation -->
-                        <a th:if="${role.getRoleName() == 'ROLE_USER'}" class="bg-dark nav-link active w-100" aria-current="page" th:href="@{/user}">User</a>
+<!--                        <a th:if="${role.getRoleName() == 'ROLE_USER'}" class="bg-dark nav-link active w-100" aria-current="page" th:href="@{/user}">User</a>-->
+                        <a class="bg-dark nav-link active w-100" aria-current="page" th:href="@{/user}">User</a>
                     </li>
                 </ul>
             </nav>

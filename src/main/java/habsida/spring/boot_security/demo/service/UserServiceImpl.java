@@ -34,28 +34,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void saveOrUpdateUser(User user) {
-        if (user.getIdUser() != null) {
-            User existingUser = userRepository.findById(user.getIdUser()).orElse(null);
-
-            if (existingUser != null) {
-                existingUser.setFirstName(user.getFirstName());
-                existingUser.setLastName(user.getLastName());
-                existingUser.setRoles(user.getRoles());
-                existingUser.setEmail(user.getEmail());
-                userRepository.save(existingUser);
-
-            }
-
-        } else {
-            userRepository.save(user);
-
-        }
+    public void saveUser(User user) {
+        userRepository.save(user);
 
     }
 
     @Override
-    public void removeUserById(long id) {
+    public User updateUser(User user) {
+        User existingUser = userRepository.findById(user.getIdUser()).orElseThrow(() -> new RuntimeException("user not found :("));
+
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setRoles(user.getRoles());
+        existingUser.setEmail(user.getEmail());
+
+        userRepository.save(existingUser);
+        return existingUser;
+    }
+
+    @Override
+    public void removeUserById(Long id) {
         userRepository.deleteById(id);
 
     }
