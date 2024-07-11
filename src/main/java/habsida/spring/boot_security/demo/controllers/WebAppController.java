@@ -1,4 +1,4 @@
-package habsida.spring.boot_security.demo.controller;
+package habsida.spring.boot_security.demo.controllers;
 
 import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
@@ -90,8 +90,7 @@ public class WebAppController {
             return "redirect:/admin";
         }
 
-        User userToUpdate = userRepository.findUserById(id);
-        userService.updateUser(userToUpdate);
+        userService.updateUser(id, user);
         logger.info("User was updated {}", user);
         return "redirect:/admin";
 

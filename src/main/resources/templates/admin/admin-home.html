@@ -120,10 +120,9 @@
                                         </a>
                                     </td>
                                     <td class="text-center">
-                                        <!--                                            <a th:href="@{/admin/update/{id} (id=${user.idUser})}">update</a>-->
-                                        <!--                                            <button type="button" class="btn btn-primary edit-user-btn" data-toggle="modal" data-bs-target="#editUserModal">edit</button>-->
+
                                         <form th:ref="@{/admin/update/{id} (id=${user.idUser})}" method="post">
-                                            <!--                                                <input type="hidden" name="_method" value="PUT" />-->
+
                                             <button type="button" class="btn btn-primary edit-user-btn"
                                                     data-user-id="${user.idUser}" data-bs-toggle="modal"
                                                     data-bs-target="#editUserModal">edit
@@ -215,24 +214,27 @@
                         <div class="modal-body">
                             <!-- form to edit user details -->
                             <div class="form-group mb-3">
+                                  <!-- <tr th:each="user : ${users}">
+                                    <td class="text-center" th:text="${user.idUser}"></td>
+                                    <td class="text-center" th:text="${user.firstName}"></td> -->
                                 <label for="firstName">First Name</label>
                                 <input type="text" class="form-control" id="firstName" name="firstName"
-                                       th:value="*{firstName}">
+                                       th:value="*{firstName}" th:placeholder="${user.firstName}">
                             </div>
                             <div class="form-group mb-3">
                                 <label for="lastName">Last Name</label>
                                 <input type="text" class="form-control" id="lastName" name="lastName"
-                                       th:value="*{lastName}">
+                                       th:value="*{lastName}" th:placeholder="${user.lastName}">
                             </div>
                             <div class="form-group mb-3">
                                 <label for="age">Age</label>
                                 <input type="number" class="form-control" id="age" name="age"
-                                       th:value="*{age}">
+                                       th:value="*{age}" th:placeholder="${user.age}">
                             </div>
                             <div class="form-group mb-3">
                                 <label for="email">Email</label>
                                 <input type="email" class="form-control" id="email" name="email"
-                                       th:value="*{email}">
+                                       th:value="*{email}" th:placeholder="${user.email}">
                             </div>
 
                             <!-- roles selection -->
