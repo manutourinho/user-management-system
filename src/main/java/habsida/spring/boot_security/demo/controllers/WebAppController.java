@@ -20,26 +20,28 @@ import java.util.List;
 import java.util.Set;
 
 @Controller
-@RequestMapping("/")
+//@RequestMapping("/")
 public class WebAppController {
 
     private final UserService userService;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    private static final Logger logger = LoggerFactory.getLogger(WebAppController.class);
 
     @Autowired
-    public WebAppController(UserService userService, RoleRepository roleRepository, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public WebAppController(UserService userService, RoleRepository roleRepository, UserRepository userRepository) {
         this.userService = userService;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 
     }
 
-    @GetMapping("/user")
+    @GetMapping("/")
+    public String home() {
+        return "index";
+
+    }
+
+    @GetMapping("/users")
     public String userHomePage(Model model, Principal principal) {
         User loggedUser = userRepository.findByUsername(principal.getName());
         model.addAttribute("loggedUser", loggedUser);
@@ -49,7 +51,7 @@ public class WebAppController {
 
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/admins")
     public String adminHomePage(Model model, Principal principal) {
         User loggedUser = userRepository.findByUsername(principal.getName());
         model.addAttribute("loggedUser", loggedUser);
@@ -68,41 +70,41 @@ public class WebAppController {
 
     }
 
-    @PostMapping("/admin/add")
-    public String add(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, @RequestParam("roles") Set<Role> roles, @RequestParam("password") String password) {
-        if (bindingResult.hasErrors()) {
-            logger.error("Error creating new user {}", user);
-        }
-
-
-        user.setRoles(roles);
-        user.setPassword(bCryptPasswordEncoder.encode(password));
-        userService.saveUser(user);
-        logger.info("new user was created {}", user);
-        return "redirect:/admin";
-
-    }
-
-    @PostMapping(value = "/admin/update/{id}")
-    public String update(@PathVariable("id") Long id, @ModelAttribute("user") User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            logger.error("Error updating new user {}", user);
-            return "redirect:/admin";
-        }
-
-        userService.updateUser(id, user);
-        logger.info("User was updated {}", user);
-        return "redirect:/admin";
-
-    }
-
-    @PostMapping(value = "admin/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        userService.removeUserById(id);
-        logger.info("user has been deleted. User id {}", id);
-        return "redirect:/admin";
-
-    }
+//    @PostMapping("/admins/add")
+//    public String add(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, @RequestParam("roles") Set<Role> roles, @RequestParam("password") String password) {
+//        if (bindingResult.hasErrors()) {
+//            logger.error("Error creating new user {}", user);
+//        }
+//
+//
+//        user.setRoles(roles);
+//        user.setPassword(bCryptPasswordEncoder.encode(password));
+//        userService.saveUser(user);
+//        logger.info("new user was created {}", user);
+//        return "redirect:/admins";
+//
+//    }
+//
+//    @PostMapping(value = "/admins/update/{id}")
+//    public String update(@PathVariable("id") Long id, @ModelAttribute("user") User user, BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//            logger.error("Error updating new user {}", user);
+//            return "redirect:/admins";
+//        }
+//
+//        userService.updateUser(id, user);
+//        logger.info("User was updated {}", user);
+//        return "redirect:/admins";
+//
+//    }
+//
+//    @PostMapping(value = "admins/delete/{id}")
+//    public String delete(@PathVariable("id") Long id) {
+//        userService.removeUserById(id);
+//        logger.info("user has been deleted. User id {}", id);
+//        return "redirect:/admins";
+//
+//    }
 
 
 }

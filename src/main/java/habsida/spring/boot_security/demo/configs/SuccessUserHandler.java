@@ -16,13 +16,13 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
         String redirectUrl = httpServletRequest.getContextPath();
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            redirectUrl = "/admin";
+            redirectUrl = "/admins";
 
         } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))) {
-            redirectUrl = "/user";
+            redirectUrl = "/users";
 
         }
-        
+
 
         httpServletResponse.sendRedirect(redirectUrl);
 

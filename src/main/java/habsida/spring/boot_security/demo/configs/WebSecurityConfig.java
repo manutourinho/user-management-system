@@ -24,9 +24,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/", "/register").permitAll()
+                .antMatchers("/admins/**").hasRole("ADMIN")
+                .antMatchers("/users/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/", "/register", "/js/**").permitAll()
                 .and().formLogin()
                 .usernameParameter("email").permitAll()
                 .successHandler(getSuccessUserHandler)
@@ -41,5 +41,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
 
     }
+
 
 }
