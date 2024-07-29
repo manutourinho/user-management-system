@@ -1,50 +1,90 @@
-$(document).ready(function() {
-    const API_URL = 'http://localhost:8080/api/admins';
+$(document).ready(function () {
+    const API_URL = 'http://localhost:8080/api';
+    // const editUserModal = document.getElementById('editUserModal');
+    // const deleteUserModal = document.getElementById('deleteUserModal');
+    // const editUserForm = document.getElementById('editUserForm');
+
+    // tabs navigation! pls work!!
+    $('#userTabs a').on('click', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
 
     // fetch and display users
     function fetchUsers() {
         $.ajax({
-            url: API_URL,
+            url: API_URL + '/admins',
             method: 'GET',
             success: function(data) {
                 let userTableBody = $('#userTableBody');
                 userTableBody.empty();
                 data.forEach(user => {
+                    let roles = user.roles.map(role => (role.roleName).substring(5)).join(', ');
+
                     userTableBody.append(`
-                        <tr>
-                            <td>${user.id}</td>
-                            <td>${user.firstName}</td>
-                            <td>${user.lastName}</td>
-                            <td>${user.age}</td>
-                            <td>${user.email}</td>
-                            <td>${user.roles}</td>
-                            <td>
-                                <button class="btn btn-sm btn-primary editUserBtn" data-id="${user.id}" data-firstName="${user.firstName}" data-lastName="${user.lastName}" data-age="${user.age}" data-email="${user.email}" data-password="${user.password}" data-roles="${user.roles}">Edit</button>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-danger deleteUserBtn" data-id="${user.id}">Delete</button>
-                            </td>
-                        </tr>
-                    `);
+                <tr>
+                    <td>${user.idUser}</td>
+                    <td>${user.firstName}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.age}</td>
+                    <td>${user.email}</td>
+                    <td>${roles}</td>
+                    <td>
+                        <button id="editUserBtn" class="btn btn-sm btn-primary editUserBtn" 
+                                data-id="${user.idUser}" 
+                                data-firstname="${user.firstName}" 
+                                data-lastname="${user.lastName}" 
+                                data-age="${user.age}" 
+                                data-email="${user.email}" 
+                                data-roles='${roles}'>
+                            edit
+                        </button>
+
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-danger deleteUserBtn" data-id="${user.idUser}">delete</button>
+                    </td>
+                </tr>
+            `);
                 });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching users:', status, error);
+                console.error('Response:', xhr.responseText);
+                alert('An error occurred while fetching users.');
             }
         });
     }
 
-    fetchUsers();
+    $(document).ready(function() {
+        fetchUsers();
+    });
+
 
     // add User!!!
-    $('#addUserForm').submit(function(event) {
+    $('#addUserForm').submit(function (event) {
         event.preventDefault();
-        const userFirstName = $('#addUserFirstName').val();
-        const userLastName = $('#addUserLastName').val();
-        const userAge = $('#addUserAge').val();
-        const userEmail = $('#addUserEmail').val();
-        const userPassword = $('#addUserPassword').val();
-        const userRoles = $('#addUserRoles').val().split(',').map(role => ({ name: role.trim() }));
+        console.log('add user form submitted!!!!!');
+        const userFirstName = $('#addFirstName').val();
+        const userLastName = $('#addLastName').val();
+        const userAge = $('#addAge').val();
+        const userEmail = $('#addEmail').val();
+        const userPassword = $('#addPassword').val();
+        const selectedRoles = $('#addRoles').val();
+
+        const userRoles = selectedRoles.map(roleId => ({idRole: roleId}))
+
+        console.log('new user form data:', {
+            firstName: userFirstName,
+            lastName: userLastName,
+            age: userAge,
+            email: userEmail,
+            password: userPassword,
+            roles: userRoles
+        });
 
         $.ajax({
-            url: API_URL + '/add',
+            url: API_URL + '/admins/add',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -53,49 +93,64 @@ $(document).ready(function() {
                 age: userAge,
                 email: userEmail,
                 password: userPassword,
-                roles: userRoles
+                idRole: userRoles
             }),
-            success: function() {
+            success: function () {
                 $('#addUserForm')[0].reset();
                 fetchUsers();
-                alert('User added successfully!');
+                alert('user added successfully! :)');
+            },
+            error: function (xhr, status, error) {
+                console.error('error adding user:', error);
+                console.error('server response:', xhr.responseText);
+                alert('error adding user: ' + error);
             }
         });
     });
 
+
     // edit user~~~~~~~
+    // v.1
     $(document).on('click', '.editUserBtn', function() {
         const idUser = $(this).data('id');
-        const userFirstName = $(this).data('firstName');
-        const userLastName = $(this).data('lastName');
+        const userFirstName = $(this).data('firstname');
+        const userLastName = $(this).data('lastname');
         const userAge = $(this).data('age');
         const userEmail = $(this).data('email');
-        const userPassword = $(this).data('password');
-        const userRoles = $(this).data('roles');
+        const userRoles = JSON.parse($(this).attr('data-roles'));
+
+        console.log('idUser:', idUser);
+        console.log('userFirstName:', userFirstName);
+        console.log('userLastName:', userLastName);
+        console.log('userAge:', userAge);
+        console.log('userEmail:', userEmail);
+        console.log('userRoles:', userRoles);
 
         $('#editUserId').val(idUser);
-        $('#editUserFirstName').val(userFirstName);
-        $('#editUserLastName').val(userLastName);
-        $('#editUserAge').val(userAge);
-        $('#editUserEmail').val(userEmail);
-        $('#editUserPassword').val(userPassword);
-        $('#editUserRoles').val(userRoles);
+        $('#editFirstName').val(userFirstName);
+        $('#editLastName').val(userLastName);
+        $('#editAge').val(userAge);
+        $('#editEmail').val(userEmail);
 
-        $('#editUserModal').showModal();
+        $('#editRoles').empty();
+        userRoles.forEach(role => {
+            $('#editRoles').append(`<option value="${role}" selected>${role}</option>`);
+        });
+
+        $('#editUserModal').modal('show');
     });
 
-    $('#editUserForm').submit(function(event) {
+    $('#editUserForm').on('submit', function(event) {
         event.preventDefault();
         const idUser = $('#editUserId').val();
-        const userFirstName = $('#editUserFirstName').val();
-        const userLastName = $('#editUserLastName').val();
-        const userAge = $('#editUserAge').val();
-        const userEmail = $('#editUserEmail').val();
-        const userPassword = $('#editUserPassword').val();
-        const userRoles = $('#editUserRoles').val().split(',').map(role => ({ name: role.trim() }));
+        const userFirstName = $('#editFirstName').val();
+        const userLastName = $('#editLastName').val();
+        const userAge = $('#editAge').val();
+        const userEmail = $('#editEmail').val();
+        const userRoles = $('#editRoles').val().map(role => ({ name: role }));
 
         $.ajax({
-            url: API_URL + '/update/' + idUser,
+            url: API_URL + '/admins/update/' + idUser,
             method: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -103,8 +158,8 @@ $(document).ready(function() {
                 lastName: userLastName,
                 age: userAge,
                 email: userEmail,
-                password: userPassword,
-                roles: userRoles }),
+                roles: userRoles
+            }),
             success: function() {
                 $('#editUserModal').modal('hide');
                 fetchUsers();
@@ -113,30 +168,76 @@ $(document).ready(function() {
         });
     });
 
-    // delete User
-    $(document).on('click', '.deleteUserBtn', function() {
-        const idUser = $(this).data('id');
-        $('#deleteUserModal').showModal();
-        $('#confirmDeleteUser').off('click').on('click', function() {
-            // const idUser = $(this).data('id');
 
-            $.ajax({
-                url: API_URL + '/delete/' + idUser,
-                method: 'DELETE',
-                success: function() {
-                    $('#deleteUserModal').modal('hide');
-                    fetchUsers();
-                    alert('User deleted successfully!');
-                }
-            });
-        });
-    });
+
+
+
+
+    // delete User
+    // $(document).on('click', '.deleteUserBtn', function () {
+    //     const idUser = $(this).data('id');
+    //     const userFirstName = $(this).data('firstname');
+    //     const userLastName = $(this).data('lastname');
+    //     const userAge = $(this).data('age');
+    //     const userEmail = $(this).data('email');
+    //     const userPassword = $(this).data('password');
+    //     const userRoles = JSON.parse($(this).attr('data-roles'));
+    //
+    //     console.log('idUser:', idUser);
+    //     console.log('userFirstName:', userFirstName);
+    //     console.log('userLastName:', userLastName);
+    //     console.log('userAge:', userAge);
+    //     console.log('userEmail:', userEmail);
+    //     console.log('userPassword:', userPassword);
+    //     console.log('userRoles:', userRoles);
+    //
+    //     $('#deleteUserId').val(idUser);
+    //     $('#deleteFirstName').val(userFirstName);
+    //     $('#deleteLastName').val(userLastName);
+    //     $('#deleteAge').val(userAge);
+    //     $('#deleteEmail').val(userEmail);
+    //     // $('#deletePassword').val(userPassword);
+    //
+    //     $('#editRoles').empty();
+    //     userRoles.forEach(role => {
+    //         $('#deleteRoles').append(`<option value="${role}" selected>${role}</option>`);
+    //     });
+    //
+    //     $('#deleteUserModal').modal('show');
+    // });
+    //
+    // $('#deleteUserForm').on('submit', function(event) {
+    //     event.preventDefault();
+    //     const idUser = $('#deleteUserId').val();
+    //     const userFirstName = $('#deleteFirstName').val();
+    //     const userLastName = $('#deleteLastName').val();
+    //     const userAge = $('#deleteAge').val();
+    //     const userEmail = $('#deleteEmail').val();
+    //     const userPassword = $('#deletePassword').val();
+    //     const userRoles = $('#deleteRoles').val().map(role => ({ name: role }));
+    //
+    //     $.ajax({
+    //         url: API_URL + '/admins/delete/' + idUser,
+    //         method: 'DELETE',
+    //         contentType: 'application/json',
+    //         data: JSON.stringify({
+    //             firstName: userFirstName,
+    //             lastName: userLastName,
+    //             age: userAge,
+    //             email: userEmail,
+    //             password: userPassword,
+    //             roles: userRoles
+    //         }),
+    //         success: function() {
+    //             $('#deleteUserModal').modal('hide');
+    //             fetchUsers();
+    //             alert('User deleted successfully!');
+    //         }
+    //     });
+    // });
 
 
 });
-
-
-
 
 
 // const

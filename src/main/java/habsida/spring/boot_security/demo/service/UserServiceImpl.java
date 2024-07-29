@@ -4,6 +4,8 @@ import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
 import habsida.spring.boot_security.demo.repository.RoleRepository;
 import habsida.spring.boot_security.demo.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,6 +24,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
@@ -32,6 +36,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User saveUser(User user) {
+        user.setRoles(user.getRoles());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
 
@@ -61,7 +66,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        try {
+            logger.debug("retrieving all users from db");
+            List<User> users = userRepository.findAll();
+            logger.debug("retrieved all users from db: {}", users);
+            return users;
+
+        } catch (Exception e) {
+            logger.error("error retrieving users!!!!!!!");
+            throw e;
+        }
 
     }
 

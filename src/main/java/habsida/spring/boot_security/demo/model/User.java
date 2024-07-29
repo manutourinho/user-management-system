@@ -1,6 +1,7 @@
 package habsida.spring.boot_security.demo.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +27,7 @@ public class User implements UserDetails {
     @Column
     private Byte age;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -39,10 +40,6 @@ public class User implements UserDetails {
 
     @Column(length = 60)
     private String password;
-
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "idRole")
-//    private Role role;
 
     public User() {
     }
