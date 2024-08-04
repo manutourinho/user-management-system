@@ -1,5 +1,6 @@
 package habsida.spring.boot_security.demo.controllers;
 
+import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
 
 import habsida.spring.boot_security.demo.repository.RoleRepository;
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -32,16 +35,20 @@ public class UsersRestController {
     }
 
     @GetMapping("/admins")
-    public ResponseEntity<?> getAllUsers() {
-        try {
+    public ResponseEntity<Map<String, Object>> getAllUsers() {
+
             logger.debug("fetching all users");
             List<User> users = userService.getAllUsers();
+            List<Role> roles = roleRepository.findAll();
             logger.debug("fetched users: {}", users);
-            return new ResponseEntity<>(users, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("an error occurred while fetching the users", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            logger.debug("fetched roles: {}", roles);
+
+            Map<String,Object> resp = new HashMap<>();
+            resp.put("users", users);
+            resp.put("roles", roles);
+
+            return ResponseEntity.ok(resp);
+
 
     }
 
@@ -67,6 +74,7 @@ public class UsersRestController {
     @PutMapping("/admins/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id,
                                            @RequestBody @Valid User user) {
+        System.out.println("receivd user: " + user);
         User updatedUser = userService.updateUser(id, user);
         if (updatedUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

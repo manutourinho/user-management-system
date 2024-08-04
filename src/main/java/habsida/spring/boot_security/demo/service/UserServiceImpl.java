@@ -14,7 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -44,18 +47,39 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User updateUser(Long id, User user) {
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found :("));
-        if (existingUser != null) {
+//        User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found :("));
+//        if (existingUser != null) {
+//            existingUser.setFirstName(user.getFirstName());
+//            existingUser.setLastName(user.getLastName());
+//            existingUser.setEmail(user.getEmail());
+//            existingUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//            existingUser.setRoles(user.getRoles());
+//
+//            return userRepository.save(existingUser);
+//        }
+//
+//        return null;
+
+        return userRepository.findById(id).map(existingUser -> {
             existingUser.setFirstName(user.getFirstName());
             existingUser.setLastName(user.getLastName());
-            existingUser.setRoles(user.getRoles());
+            existingUser.setAge(user.getAge());
             existingUser.setEmail(user.getEmail());
-            existingUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//            if (user.getPassword() != null) {
+//                existingUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//            }
+
+            Set<Role> roles = new HashSet<>();
+            for (Role role : user.getRoles()) {
+                Role existingRole = roleRepository.findByRoleName(role.getRoleName());
+                roles.add(Objects.requireNonNullElse(existingRole, role));
+            }
+
+            existingUser.setRoles(roles);
 
             return userRepository.save(existingUser);
-        }
+        }).orElse(null);
 
-        return null;
     }
 
     @Override

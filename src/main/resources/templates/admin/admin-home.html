@@ -39,8 +39,8 @@
 <div class="container-fluid vh-100">
     <div class="row align-items-start">
         <!-- sidebar -->
-        <div class="col-md-2 sidebar gx-0 text-center vh-100">
-            <nav class="nav flex-column nav-pills h-100 mt-3">
+        <div class="col-md-2 sidebar gx-0 text-center d-flex flex-column">
+            <nav class="nav flex-column nav-pills mt-3 flex-grow-1">
                 <!-- sidebar navigation -->
                 <ul class="nav flex-column">
                     <li th:each="role : ${roles}" class="nav-item flex-grow-1">
@@ -153,8 +153,8 @@
         </div>
 
         <!-- edit popup -->
-        <div class="modal" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
@@ -162,7 +162,11 @@
                     </div>
                     <form id="editUserForm">
                         <div class="modal-body">
-                            <input type="hidden" id="editUserId">
+<!--                            <input type="hidden" id="editUserId">-->
+                            <div class="form-group mb-3">
+                                <label for="editIdUser">ID</label>
+                                <input type="text" class="form-control" id="editIdUser" readonly>
+                            </div>
                             <div class="form-group mb-3">
                                 <label for="editFirstName">First Name</label>
                                 <input type="text" class="form-control" id="editFirstName">
@@ -200,61 +204,53 @@
 
 
         <!-- delete popup -->
-        <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel"
-             aria-hidden="true">
-            <form action="#" id="deleteUserForm">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-
-                        <!--                        <input type="hidden" name="_method" value="PUT"/>-->
-
+        <div class="modal" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteUserModalLabel">Edit User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="deleteUserForm">
                         <div class="modal-body">
-                            <!--                            <input type="hidden" id="deleteUserId">-->
-                            <p>Are you sure you want to delete this user?</p>
-                            <!-- form to display user details -->
+                            <input type="hidden" id="deleteUserId">
                             <div class="form-group mb-3">
-                                <!-- <tr th:each="user : ${users}">
-                                  <td class="text-center" th:text="${user.idUser}"></td>
-                                  <td class="text-center" th:text="${user.firstName}"></td> -->
-                                <label for="firstName_delete">First Name</label>
-                                <input type="text" class="form-control" id="firstName_delete" name="firstName" disabled>
+                                <label for="deleteIdUser">ID</label>
+                                <input type="text" class="form-control" id="deleteIdUser" readonly>
                             </div>
                             <div class="form-group mb-3">
-                                <label for="lastName_delete">Last Name</label>
-                                <input type="text" class="form-control" id="lastName_delete" name="lastName" disabled>
+                                <label for="deleteFirstName">First Name</label>
+                                <input type="text" class="form-control" id="deleteFirstName" readonly>
                             </div>
                             <div class="form-group mb-3">
-                                <label for="age_delete">Age</label>
-                                <input type="number" class="form-control" id="age_delete" name="age" disabled>
+                                <label for="deleteLastName">Last Name</label>
+                                <input type="text" class="form-control" id="deleteLastName" readonly>
                             </div>
                             <div class="form-group mb-3">
-                                <label for="email_delete">Email</label>
-                                <input type="email" class="form-control" id="email_delete" name="email" disabled>
+                                <label for="deleteAge">Age</label>
+                                <input type="number" class="form-control" id="deleteAge" readonly>
                             </div>
-
-                            <!-- roles selection -->
                             <div class="form-group mb-3">
-                                <label for="roles_delete">Role</label>
-                                <select class="form-control" id="roles_delete" name="roles" disabled>
-                                    <!-- roles inserted via js -->
-                                </select>
+                                <label for="deleteEmail">Email</label>
+                                <input type="email" class="form-control" id="deleteEmail" readonly>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="deletePassword">Password</label>
+                                <input type="text" class="form-control" id="deletePassword" readonly>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="deleteRoles">Role</label>
+                                <select class="form-control" id="deleteRoles" multiple></select>
                             </div>
                         </div>
-
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">cancel</button>
                             <button type="submit" form="deleteUserForm" class="btn btn-primary submit">yes, delete!
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

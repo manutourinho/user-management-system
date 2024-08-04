@@ -1,10 +1,7 @@
 package habsida.spring.boot_security.demo.configs;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.*;
-
-import java.time.Duration;
 
 @Configuration
 @EnableWebMvc
@@ -14,14 +11,6 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/admins").setViewName("admin/admin-home");
 
     }
-
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry
-//                .addResourceHandler("/static/**")
-//                .addResourceLocations("classpath:/META-INF/resources/", "classpath:/resources/",
-//                        "classpath:/static/", "classpath:/public/")
-//                .setCacheControl(CacheControl.maxAge(Duration.ofDays(365)));
-//    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

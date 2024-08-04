@@ -41,6 +41,7 @@ public class User implements UserDetails {
     @Column(length = 60)
     private String password;
 
+
     public User() {
     }
 
@@ -87,20 +88,14 @@ public class User implements UserDetails {
     }
 
     @Override
+//    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        ArrayList<GrantedAuthority> arrAuths = new ArrayList<>();
-//
-//        if (getRole() != null) {
-//            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(getRole().getRoleName());
-//            arrAuths.add(authority);
-//        }
-//
-//        return arrAuths;
-
         return getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toList());
+
     }
+
 
     @Override
     public String getPassword() {
