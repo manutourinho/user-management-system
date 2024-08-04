@@ -2,8 +2,11 @@ package habsida.spring.boot_security.demo.configs;
 
 import habsida.spring.boot_security.demo.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -28,10 +31,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/admins/**", "/admins/**").hasRole("ADMIN")
                 .antMatchers("/api/users/**", "/users/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/", "/register", "/js/**").permitAll()
-                .and().formLogin()
+                .and()
+                .formLogin()
                 .usernameParameter("email").permitAll()
                 .successHandler(getSuccessUserHandler)
-                .and().logout()
+                .and()
+                .logout()
                 .deleteCookies();
 
     }
@@ -41,6 +46,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
 
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 

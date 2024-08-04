@@ -7,18 +7,22 @@ $(document).ready(function () {
         $(this).tab('show');
     });
 
-    let allRoles = []; // Global variable to store roles
 
-// Function to fetch users and roles
+    let allRoles = [];
+
     function fetchUsers() {
         $.ajax({
             url: API_URL + '/admins',
             method: 'GET',
             success: function(data) {
                 const users = data.users;
-                allRoles = data.roles; // Store roles in the global variable
+                allRoles = data.roles;
 
-                // Populate the user table
+                const loggedInUser = users[0];
+                // displayLoggedInUserInfo(loggedInUser);
+                navBarFunctionality(loggedInUser.roles);
+                // userPgNavBarBuild(loggedInUser.roles);
+
                 let userTableBody = $('#userTableBody');
                 userTableBody.empty();
                 users.forEach(user => {
@@ -56,6 +60,7 @@ $(document).ready(function () {
                 </tr>
             `);
                 });
+
             },
             error: function(xhr, status, error) {
                 console.error('error fetching users:', status, error);
@@ -64,6 +69,97 @@ $(document).ready(function () {
             }
         });
     }
+
+    // display logged-in user info
+    // function displayLoggedInUserInfo(user) {
+    //     let loggedInUserInfoBody = $('#loggedInUserInfoBody');
+    //     loggedInUserInfoBody.empty();
+    //
+    //     loggedInUserInfoBody.append(`
+    //     <tr>
+    //         <td class="text-center">${user.idUser}</td>
+    //         <td class="text-center">${user.firstName}</td>
+    //         <td class="text-center">${user.lastName}</td>
+    //         <td class="text-center">${user.age}</td>
+    //         <td class="text-center">${user.email}</td>
+    //         <td class="text-center">
+    //             ${user.roles.map(role => `<span>[${role.roleName.substring(5)}]</span>`).join(', ')}
+    //         </td>
+    //     </tr>
+    // `);
+    // }
+
+    function fetchUserPageInfo() {
+        $.ajax({
+            url: API_URL + '/users', // Adjust to the new endpoint
+            method: 'GET',
+            success: function(data) {
+                const user = data.user; // Assuming the endpoint returns user info
+
+                // Update the page with the user's information
+                $('#loggedInUserInfoBody').empty();
+                $('#loggedInUserInfoBody').append(`
+                <tr>
+                    <td class="text-center">${user.idUser}</td>
+                    <td class="text-center">${user.firstName}</td>
+                    <td class="text-center">${user.lastName}</td>
+                    <td class="text-center">${user.age}</td>
+                    <td class="text-center">${user.email}</td>
+                    <td class="text-center">${user.roles.map(role => role.roleName).join(', ')}</td>
+                </tr>
+            `);
+
+                navBarFunctionality(user.roles);
+            },
+            error: function(xhr, status, error) {
+                console.error('error fetching user page info:', status, error);
+                console.error('response:', xhr.responseText);
+                alert('an error occurred while fetching user page info :(');
+            }
+        });
+    }
+
+
+    function navBarFunctionality(roles) {
+        const navBar = $('.nav.flex-column');
+        navBar.empty();
+
+        // adm tab
+        roles.forEach(role => {
+            if (role.roleName === 'ROLE_ADMIN') {
+                const adminTabClass = window.location.pathname === '/admins' ? 'nav-link active w-100 bg-dark' : 'nav-link w-100 text-secondary';
+                navBar.append(`
+                <li class="nav-item flex-grow-1">
+                    <a class="${adminTabClass}" href="/admins">Admin</a>
+                </li>
+            `);
+            }
+        });
+
+        // user tab
+        const userTabClass = window.location.pathname === '/users' ? 'nav-link active w-100 bg-dark' : 'nav-link w-100 text-secondary';
+        navBar.append(`
+        <li class="nav-item flex-grow-1">
+            <a class="${userTabClass}" href="/users">User</a>
+        </li>
+    `);
+
+    }
+
+    // function userPgNavBarBuild(roles) {
+    //     const roleNav = $('#userPgRoleNav');
+    //     roleNav.empty();
+    //
+    //     roles.forEach(role => {
+    //         if (role.roleName === 'ROLE_ADMIN') {
+    //             roleNav.append(`<li class="nav-item flex-grow-1">
+    //                 <a class="nav-link active w-100 bg-dark" href="/admins">Admin</a>
+    //             </li>`);
+    //         }
+    //         roleNav.append(<a class="nav-link active w-100 bg-dark" aria-current="page" href="/users">User</a>);
+    //
+    //     });
+    // }
 
     // roles dropdown!!!!!!!!!!!
     function populateRolesDropdown() {
@@ -250,6 +346,7 @@ $(document).ready(function () {
 
     $(document).ready(function() {
         fetchUsers();
+        fetchUserPageInfo();
     });
 
 

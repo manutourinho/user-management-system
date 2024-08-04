@@ -41,16 +41,8 @@
         <!-- sidebar -->
         <div class="col-md-2 sidebar gx-0 text-center d-flex flex-column">
             <nav class="nav flex-column nav-pills mt-3 flex-grow-1">
-                <!-- sidebar navigation -->
+                <!-- sidebar nav -->
                 <ul class="nav flex-column">
-                    <li th:each="role : ${roles}" class="nav-item flex-grow-1">
-                        <!-- admin role navigation -->
-                        <a th:if="${role.getRoleName() == 'ROLE_ADMIN'}" class="nav-link active w-100 bg-dark"
-                           aria-current="page" th:href="@{/admins}">Admin</a>
-                        <!-- user role navigation -->
-                        <a th:if="${role.getRoleName() == 'ROLE_USER'}" class="nav-link w-100 text-secondary"
-                           th:href="@{/users}">User</a>
-                    </li>
                 </ul>
             </nav>
         </div>

@@ -22,5 +22,7 @@ public interface UserService {
 
     List<Role> getRoles();
 
+    public User getLoggedInUser();
+
 
 }

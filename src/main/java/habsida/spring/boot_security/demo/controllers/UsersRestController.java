@@ -38,11 +38,17 @@ public class UsersRestController {
     public ResponseEntity<Map<String, Object>> getAllUsers() {
             logger.debug("fetching all users");
 
+            User loggedUser = userService.getLoggedInUser();
             List<User> users = userService.getAllUsers();
             List<Role> roles = roleRepository.findAll();
             logger.debug("fetched users: {}", users);
             logger.debug("fetched roles: {}", roles);
 
+            if (loggedUser != null) {
+                users.remove(loggedUser);
+                users.add(0, loggedUser);
+
+            }
 
             Map<String,Object> resp = new HashMap<>();
             resp.put("users", users);
@@ -51,15 +57,20 @@ public class UsersRestController {
             return ResponseEntity.ok(resp);
     }
 
-//    @GetMapping("/users/{id}")
-//    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-//        User user = userService.getUserById(id);
-//        if (user == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(user);
-//
-//    }
+    @GetMapping("/users")
+    public ResponseEntity<Map<String, Object>> getUserPgInfo() {
+        logger.debug("fetching user info for the users page");
+
+        User loggedUser = userService.getLoggedInUser();
+        Map<String, Object> resp = new HashMap<>();
+
+        if (loggedUser != null) {
+            resp.put("user", loggedUser);
+        }
+
+        return ResponseEntity.ok(resp);
+    }
+
 
     @PostMapping("/admins/add")
     public ResponseEntity<User> createUser(@RequestBody @Valid User user) {
