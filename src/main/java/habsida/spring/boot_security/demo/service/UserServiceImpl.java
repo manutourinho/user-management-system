@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User saveUser(User user) {
-        user.setRoles(user.getRoles());
+        user.setRoles(rolesToAssign(user));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
 
@@ -47,19 +47,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User updateUser(Long id, User user) {
-//        User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found :("));
-//        if (existingUser != null) {
-//            existingUser.setFirstName(user.getFirstName());
-//            existingUser.setLastName(user.getLastName());
-//            existingUser.setEmail(user.getEmail());
-//            existingUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//            existingUser.setRoles(user.getRoles());
-//
-//            return userRepository.save(existingUser);
-//        }
-//
-//        return null;
-
         return userRepository.findById(id).map(existingUser -> {
             existingUser.setFirstName(user.getFirstName());
             existingUser.setLastName(user.getLastName());
@@ -69,17 +56,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 //                existingUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 //            }
 
-            Set<Role> roles = new HashSet<>();
-            for (Role role : user.getRoles()) {
-                Role existingRole = roleRepository.findByRoleName(role.getRoleName());
-                roles.add(Objects.requireNonNullElse(existingRole, role));
-            }
-
-            existingUser.setRoles(roles);
+            existingUser.setRoles(rolesToAssign(user));
 
             return userRepository.save(existingUser);
         }).orElse(null);
 
+    }
+
+    @Override
+    public Set<Role> rolesToAssign(User user) {
+        Set<Role> roles = new HashSet<>();
+        for (Role role : user.getRoles()) {
+            Role existingRole = roleRepository.findByRoleName(role.getRoleName());
+            roles.add(Objects.requireNonNullElse(existingRole, role));
+        }
+
+        return roles;
     }
 
     @Override

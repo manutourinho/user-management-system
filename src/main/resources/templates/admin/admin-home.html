@@ -135,11 +135,8 @@
                                         </div>
                                     </div>
                                     <div class="row mt-3 mb-3">
-                                        <label for="addRoles" class="form-label">Role</label>
-                                        <select class="form-control" id="addRoles" multiple>
-                                            <option th:each="role : ${roles}" th:value="${role.idRole}"
-                                                    th:text="${(role.roleName)}"></option>
-                                        </select>
+                                        <label for="addRoles">Role</label>
+                                        <select class="form-control" id="addRoles" multiple></select>
                                     </div>
                                     <div class="d-grid gap-2 col-6 mx-auto">
                                         <button type="submit" class="btn btn-dark">save new user!</button>
@@ -151,6 +148,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- edit popup -->
         <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
@@ -200,7 +198,6 @@
                 </div>
             </div>
         </div>
-
 
 
         <!-- delete popup -->

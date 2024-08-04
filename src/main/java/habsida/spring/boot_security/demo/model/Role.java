@@ -72,4 +72,6 @@ public class Role implements GrantedAuthority {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
+
+
 }

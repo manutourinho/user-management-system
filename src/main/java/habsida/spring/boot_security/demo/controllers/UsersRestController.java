@@ -30,26 +30,25 @@ public class UsersRestController {
     public UsersRestController(UserService userService,
                                RoleRepository roleRepository) {
         this.userService = userService;
-
         this.roleRepository = roleRepository;
+
     }
 
     @GetMapping("/admins")
     public ResponseEntity<Map<String, Object>> getAllUsers() {
-
             logger.debug("fetching all users");
+
             List<User> users = userService.getAllUsers();
             List<Role> roles = roleRepository.findAll();
             logger.debug("fetched users: {}", users);
             logger.debug("fetched roles: {}", roles);
+
 
             Map<String,Object> resp = new HashMap<>();
             resp.put("users", users);
             resp.put("roles", roles);
 
             return ResponseEntity.ok(resp);
-
-
     }
 
 //    @GetMapping("/users/{id}")
@@ -75,6 +74,7 @@ public class UsersRestController {
     public ResponseEntity<User> updateUser(@PathVariable Long id,
                                            @RequestBody @Valid User user) {
         System.out.println("receivd user: " + user);
+        user.getRoles().forEach(role -> System.out.println("role: " + role.getRoleName()));
         User updatedUser = userService.updateUser(id, user);
         if (updatedUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
