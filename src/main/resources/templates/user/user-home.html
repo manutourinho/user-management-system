@@ -12,18 +12,18 @@
 <body>
 <!-- navbar -->
 <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
-    <!-- logged user info -->
+
     <div class="container-fluid">
-        <!--        <p class="fs-6" th:text="${loggedUser.username}">Email</p>-->
+
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center text-white">
             <li class="nav-item text-white">
                 <p class="fs-6 d-inline" th:text="${loggedUser.username}">Email</p>
             </li>
-<!--            &nbsp;&nbsp;-->
+
             <li class="nav-item ms-2">
                 <p class="fs-6 d-inline">with roles</p>
             </li>
-<!--            &nbsp;&nbsp;-->
+
             <li class="nav-item ms-2">
                 <a th:each="role : ${loggedUser.roles}">
                     <span th:text="${' [' + role.roleName.substring(5) + ']'}"></span>
@@ -40,27 +40,28 @@
 
 <div class="container-fluid vh-100">
     <div class="row align-items-start">
-        <!-- sidebar -->
+
         <div class="col-md-2 sidebar gx-0 text-center d-flex flex-column">
             <nav class="nav flex-column nav-pills mt-3 flex-grow-1">
-                <!-- sidebar nav -->
+
                 <ul class="nav flex-column">
                 </ul>
+
             </nav>
         </div>
-        <!-- main content -->
+
         <div class="bg-light col-md-10 px-5 main-content vh-100">
             <header class="gx-5 mt-4">
                 <h2 class="mb-3 fw-light">User Information Page</h2>
             </header>
-            <!-- main content -->
+
             <div class="gx-4" th:fragment="content">
 
                 <div class="border bg-dark text-white">
                     <h4 class="px-3 mt-2">About User</h4>
                 </div>
                 <div class="border p-3">
-                    <!-- logged user info-->
+
                     <table class="table table-striped">
                             <thead>
                             <tr>
@@ -82,7 +83,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<!-- Bootstrap Bundle with Popper -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
