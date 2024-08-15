@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const API_URL = 'http://localhost:8080/api';
 
-    // tabs navigation
+
     $('#userTabs a').on('click', function (e) {
         e.preventDefault();
         $(this).tab('show');
@@ -71,12 +71,11 @@ $(document).ready(function () {
 
     function fetchUserPageInfo() {
         $.ajax({
-            url: API_URL + '/users', // Adjust to the new endpoint
+            url: API_URL + '/users',
             method: 'GET',
             success: function(data) {
-                const user = data.user; // Assuming the endpoint returns user info
+                const user = data.user;
 
-                // Update the page with the user's information
                 $('#loggedInUserInfoBody').empty();
                 $('#loggedInUserInfoBody').append(`
                 <tr>
@@ -104,7 +103,6 @@ $(document).ready(function () {
         const navBar = $('.nav.flex-column');
         navBar.empty();
 
-        // adm tab
         roles.forEach(role => {
             if (role.roleName === 'ROLE_ADMIN') {
                 const adminTabClass = window.location.pathname === '/admins' ? 'nav-link active w-100 bg-dark' : 'nav-link w-100 text-secondary';
@@ -116,7 +114,6 @@ $(document).ready(function () {
             }
         });
 
-        // user tab
         const userTabClass = window.location.pathname === '/users' ? 'nav-link active w-100 bg-dark' : 'nav-link w-100 text-secondary';
         navBar.append(`
         <li class="nav-item flex-grow-1">
@@ -127,7 +124,6 @@ $(document).ready(function () {
     }
 
 
-    // roles dropdown!!!!!!!!!!!
     function populateRolesDropdown() {
         const addRolesDropdown = $('#addRoles');
         addRolesDropdown.empty();
@@ -195,7 +191,7 @@ $(document).ready(function () {
         });
     }
 
-    // edit user!!!
+
     $(document).on('click', '.editUserBtn', function() {
         const idUser = $(this).data('id');
         const userFirstName = $(this).data('firstname');
@@ -218,7 +214,6 @@ $(document).ready(function () {
         $('#editLastName').val(userLastName);
         $('#editAge').val(userAge);
         $('#editEmail').val(userEmail);
-        // $('#editPassword').val(userPassword);
 
         populateEditRolesDropdown(userRoles);
 
@@ -266,7 +261,6 @@ $(document).ready(function () {
     });
 
 
-    // delete user!!!
     $(document).on('click', '.deleteUserBtn', function() {
         const idUser = $(this).data('id');
         const userFirstName = $(this).data('firstname');
