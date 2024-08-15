@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const API_URL = 'http://localhost:8080/api';
 
-    // tabs navigation! pls work!!
+    // tabs navigation
     $('#userTabs a').on('click', function (e) {
         e.preventDefault();
         $(this).tab('show');
@@ -19,15 +19,13 @@ $(document).ready(function () {
                 allRoles = data.roles;
 
                 const loggedInUser = users[0];
-                // displayLoggedInUserInfo(loggedInUser);
                 navBarFunctionality(loggedInUser.roles);
-                // userPgNavBarBuild(loggedInUser.roles);
 
                 let userTableBody = $('#userTableBody');
                 userTableBody.empty();
                 users.forEach(user => {
-                    let roles = user.roles.map(role => role.roleName);
-                    let rolesString = JSON.stringify(roles);
+                    let rolesToDisplay = user.roles.map(role => role.roleName.substring(5));
+                    let rolesString = JSON.stringify(user.roles.map(role => role.roleName));
 
                     userTableBody.append(`
                 <tr>
@@ -36,7 +34,7 @@ $(document).ready(function () {
                     <td>${user.lastName}</td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
-                    <td>${roles.join(', ')}</td>
+                    <td>${rolesToDisplay.join(', ')}</td>
                     <td>
                         <button class="btn btn-sm btn-primary editUserBtn" 
                                 data-id="${user.idUser}" 
@@ -70,24 +68,6 @@ $(document).ready(function () {
         });
     }
 
-    // display logged-in user info
-    // function displayLoggedInUserInfo(user) {
-    //     let loggedInUserInfoBody = $('#loggedInUserInfoBody');
-    //     loggedInUserInfoBody.empty();
-    //
-    //     loggedInUserInfoBody.append(`
-    //     <tr>
-    //         <td class="text-center">${user.idUser}</td>
-    //         <td class="text-center">${user.firstName}</td>
-    //         <td class="text-center">${user.lastName}</td>
-    //         <td class="text-center">${user.age}</td>
-    //         <td class="text-center">${user.email}</td>
-    //         <td class="text-center">
-    //             ${user.roles.map(role => `<span>[${role.roleName.substring(5)}]</span>`).join(', ')}
-    //         </td>
-    //     </tr>
-    // `);
-    // }
 
     function fetchUserPageInfo() {
         $.ajax({
@@ -146,27 +126,13 @@ $(document).ready(function () {
 
     }
 
-    // function userPgNavBarBuild(roles) {
-    //     const roleNav = $('#userPgRoleNav');
-    //     roleNav.empty();
-    //
-    //     roles.forEach(role => {
-    //         if (role.roleName === 'ROLE_ADMIN') {
-    //             roleNav.append(`<li class="nav-item flex-grow-1">
-    //                 <a class="nav-link active w-100 bg-dark" href="/admins">Admin</a>
-    //             </li>`);
-    //         }
-    //         roleNav.append(<a class="nav-link active w-100 bg-dark" aria-current="page" href="/users">User</a>);
-    //
-    //     });
-    // }
 
     // roles dropdown!!!!!!!!!!!
     function populateRolesDropdown() {
         const addRolesDropdown = $('#addRoles');
         addRolesDropdown.empty();
         allRoles.forEach(role => {
-            addRolesDropdown.append(`<option value="${role.roleName}">${role.roleName}</option>`);
+            addRolesDropdown.append(`<option value="${role.roleName}">${role.roleName.substring(5)}</option>`);
         });
     }
 
@@ -225,7 +191,7 @@ $(document).ready(function () {
         editRolesDropdown.empty();
         allRoles.forEach(role => {
             const isSelected = userRoles.includes(role.roleName) ? 'selected' : '';
-            editRolesDropdown.append(`<option value="${role.roleName}" ${isSelected}>${role.roleName}</option>`);
+            editRolesDropdown.append(`<option value="${role.roleName}" ${isSelected}>${role.roleName.substring(5)}</option>`);
         });
     }
 

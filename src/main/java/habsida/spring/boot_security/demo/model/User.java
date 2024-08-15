@@ -1,8 +1,6 @@
 package habsida.spring.boot_security.demo.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -89,7 +87,6 @@ public class User implements UserDetails {
     }
 
     @Override
-//    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))

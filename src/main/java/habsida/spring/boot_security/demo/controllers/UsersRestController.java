@@ -49,7 +49,6 @@ public class UsersRestController {
                 users.add(0, loggedUser);
 
             }
-
             Map<String,Object> resp = new HashMap<>();
             resp.put("users", users);
             resp.put("roles", roles);
@@ -66,8 +65,8 @@ public class UsersRestController {
 
         if (loggedUser != null) {
             resp.put("user", loggedUser);
-        }
 
+        }
         return ResponseEntity.ok(resp);
     }
 
@@ -89,6 +88,7 @@ public class UsersRestController {
         User updatedUser = userService.updateUser(id, user);
         if (updatedUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
         }
         return ResponseEntity.ok(updatedUser);
 

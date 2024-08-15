@@ -7,7 +7,6 @@ import habsida.spring.boot_security.demo.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +28,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-//    private final AuthenticationManager authenticationManager;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -38,7 +36,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-//        this.authenticationManager = authenticationManager;
 
     }
 
@@ -57,13 +54,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             existingUser.setLastName(user.getLastName());
             existingUser.setAge(user.getAge());
             existingUser.setEmail(user.getEmail());
-//            if (user.getPassword() != null) {
-//                existingUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//            }
-
             existingUser.setRoles(rolesToAssign(user));
 
             return userRepository.save(existingUser);
+
         }).orElse(null);
 
     }
@@ -75,8 +69,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             Role existingRole = roleRepository.findByRoleName(role.getRoleName());
             roles.add(Objects.requireNonNullElse(existingRole, role));
         }
-
         return roles;
+
     }
 
     @Override
